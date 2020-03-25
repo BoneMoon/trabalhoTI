@@ -33,9 +33,9 @@ var WorldScene = Phaser.Class({
         this.physics.add.collider(this.player, danoEsp);
 
         // -- adionar botões
-        this.btndir = this.add.image(300, 500, "btndir").setInteractive();
-        this.btndir.setScale(0.2);
-        this.btndir.setScrollFactor(0);
+        // this.btndir = this.add.image(300, 500, "btndir").setInteractive();
+        // this.btndir.setScale(0.2);
+        // this.btndir.setScrollFactor(0);
 
         // this.btndir.on(
         //     "pointerout",
