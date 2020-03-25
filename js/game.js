@@ -10,6 +10,8 @@ const config = {
 
     zoom: 2,
 
+    backgroundColor: "#ffffff",
+
     physics: {
         default: "arcade",
         arcade: {
@@ -21,7 +23,7 @@ const config = {
     scene: [
         // aqui entram as cenas
         BootScene,
-        WorldScene,
+        WorldScene
     ]
 };
 
