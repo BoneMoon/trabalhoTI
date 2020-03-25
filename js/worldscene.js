@@ -26,40 +26,80 @@ var WorldScene = Phaser.Class({
 
         this.player = this.physics.add.sprite(30, 400, "player", 6);
         this.player.setCollideWorldBounds(true);
-        this.player.setScale(2);
+        this.player.setScale(1.5);
         this.player.setVelocity(0);
+
         this.physics.add.collider(this.player, mapa);
         this.physics.add.collider(this.player, danoLava);
         this.physics.add.collider(this.player, danoEsp);
 
+        this.physics.add.overlap(
+            this.player,
+            this.danoLava,
+            this.LavaEsp,
+            null,
+            this
+        );
+
+        this.physics.add.overlap(
+            this.player,
+            this.danoEsp,
+            this.LavaEsp,
+            null,
+            this
+        );
+
+        this.physics.add.overlap(
+            this.player,
+            this.obj,
+            this.endgame,
+            null,
+            this
+        );
+
         // -- adionar botões
-        // this.btndir = this.add.image(300, 500, "btndir").setInteractive();
-        // this.btndir.setScale(0.2);
-        // this.btndir.setScrollFactor(0);
+        this.btndir = this.add.image(300, 500, "btndir").setInteractive();
+        this.btndir.setScale(0.2);
+        this.btndir.setScrollFactor(0);
 
-        // this.btndir.on(
-        //     "pointerout",
-        //     function() {
-        //         direita = false;
-        //         this.player.body.setVelocityX(0);
-        //         this.player.anims.stop();
-        //     },
+        this.btndir.on(
+            "pointerover",
+            function() {
+                direita = true;
+                this.player.body.setVelocityX(180);
+                //this.player.anims.play("right", true);
+                //this.player.flipX = false;
+            },
 
-        //     this
-        // );
-        // this.btndir.on(
-        //     "pointerdown",
-        //     function() {
-        //         direita = true;
-        //         this.player.body.setVelocityX(180);
-        //         this.player.anims.play("right", true);
-        //         this.player.flipX = false;
-        //     },
-        //     this
-        // );
+            this
+        );
+        this.btndir.on(
+            "pointerdown",
+            function() {
+                direita = true;
+                //console.log("click");
+                //this.player.body.setVelocityX(180);
+                //this.player.anims.play("right", true);
+                //this.player.flipX = false;
+            },
+            this
+        );
 
-        // this.btndir.emit("pointerout");
-        // this.btndir.emit("pointerdown");
+        this.btndir.on(
+            "pointerout",
+            function() {
+                direita = false;
+                console.log("out");
+                this.player.body.setVelocityX(0);
+                //this.player.anims.stop();
+            },
+
+            this
+        );
+
+        this.btndir.emit("pointerover");
+        this.btndir.emit("pointerdown");
+        this.btndir.emit("pointerout");
 
         // -- animações do player
         this.anims.create({
@@ -98,7 +138,21 @@ var WorldScene = Phaser.Class({
             repeat: -1
         });
 
-        //this.sky = this.add.image(0, 0, "ceu");
+        this.cameras.main.setBounds(0, 0, 960, 640);
+
+        //this.cameras.main.startFollow(this.player);
+
+        this.cameras.main.roundPixels = true;
+    },
+
+    LavaEsp: function() {
+        console.log("LAVA!");
+        this.player.disableBody(true, true);
+    },
+
+    endgame: function() {
+        this.player.disableBody(true, true);
+        console.log("ACABOU");
     },
 
     update: function() {}
