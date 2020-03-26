@@ -38,32 +38,18 @@ var WorldScene = Phaser.Class({
 
         // adicionar colisões
         this.physics.add.collider(this.player, mapa);
-        this.physics.add.collider(this.player, danoLava);
-        this.physics.add.collider(this.player, danoEsp);
 
-        this.physics.add.overlap(
-            this.player,
-            danoLava,
-            this.LavaEsp,
-            null,
-            this
-        );
+        this.physics.add.collider(this.player, danoLava, () => {
+            this.player.disableBody(true, true);
+        });
 
-        this.physics.add.overlap(
-            this.player,
-            this.danoEsp,
-            this.LavaEsp,
-            null,
-            this
-        );
+        this.physics.add.collider(this.player, danoEsp, () => {
+            this.player.disableBody(true, true);
+        });
 
-        this.physics.add.overlap(
-            this.player,
-            this.obj,
-            this.endgame,
-            null,
-            this
-        );
+        this.physics.add.collider(this.player, obj, () => {
+            this.player.disableBody(true, true);
+        });
 
         // -- adionar botão direito
         this.btndir = this.add.image(300, 500, "btndir").setInteractive();
@@ -209,16 +195,6 @@ var WorldScene = Phaser.Class({
         //this.cameras.main.startFollow(this.player);
 
         this.cameras.main.roundPixels = true;
-    },
-
-    LavaEsp: function() {
-        //console.log("LAVA!");
-        //this.player.disableBody(true, true);
-    },
-
-    endgame: function() {
-        this.player.disableBody(true, true);
-        console.log("ACABOU");
     },
 
     update: function() {
