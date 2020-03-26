@@ -18,7 +18,9 @@ const BootScene = new Phaser.Class({
             frameHeight: 16
         });
 
-        this.load.image("btndir", "assets/img/rigthButton.svg");
+        this.load.image("btndir", "assets/img/rightButton.png");
+        this.load.image("btnesq", "assets/img/leftButton.png");
+        this.load.image("btnup", "assets/img/upButton.png");
 
         //this.load.image("ceu", "assets/img/sky.png");
     },
