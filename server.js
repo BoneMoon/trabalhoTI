@@ -4,6 +4,8 @@ var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
 
 var players = {};
+
+var tempo = 0;
  
 app.use(express.static(__dirname + '/public'));
  
@@ -24,6 +26,8 @@ io.on('connection', function (socket){
   // send the players object to the new player
   socket.emit('currentPlayers', players);
 
+  socket.emit('tempoUpdate', tempo);
+
   // update all other players of the new player
   socket.broadcast.emit('newPlayer', players[socket.id]);
 
@@ -34,6 +38,16 @@ io.on('connection', function (socket){
 
     io.emit('disconnect', socket.id)
   });
+
+  socket.on('playerMovement', function (movementData) {
+    players[socket.id].x = movementData.x;
+    players[socket.id].y = movementData.y;
+    
+    socket.broadcast.emit('playerMoved', players[socket.id]);
+  });
+
+
+
 });
 
 server.listen(8081, function () {

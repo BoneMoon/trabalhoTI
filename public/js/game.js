@@ -87,30 +87,15 @@ function create() {
     const espinhos = map.addTilesetImage("espinhos", "espinhos");
 
     // layers
-    const mapa = map.createStaticLayer("chao", chao, 0, 0);
-    const obj = map.createStaticLayer("porta", porta, 0, 0);
-    const danoLava = map.createStaticLayer("lava", lava, 0, 0);
-    const danoEsp = map.createStaticLayer("espinhos", espinhos, 0, 0);
+    this.mapa = map.createStaticLayer("chao", chao, 0, 0);
+    this.obj = map.createStaticLayer("porta", porta, 0, 0);
+    this.danoLava = map.createStaticLayer("lava", lava, 0, 0);
+    this.danoEsp = map.createStaticLayer("espinhos", espinhos, 0, 0);
 
     // colisões com as layers
-    mapa.setCollisionByExclusion(-1, true);
-    danoLava.setCollisionByExclusion(-1, true);
-    danoEsp.setCollisionByExclusion(-1, true);
-
-    // adicionar colisões
-    /* this.physics.add.collider(this.player, mapa);
-
-    this.physics.add.collider(this.player, danoLava, () => {
-        this.player.disableBody(true, true);
-    });
-
-    this.physics.add.collider(this.player, danoEsp, () => {
-        this.player.disableBody(true, true);
-    });
-
-    this.physics.add.collider(this.player, obj, () => {
-        this.player.disableBody(true, true);
-    });*/
+    this.mapa.setCollisionByExclusion(-1, true);
+    this.danoLava.setCollisionByExclusion(-1, true);
+    this.danoEsp.setCollisionByExclusion(-1, true);
 
     // -- adionar botão direito
     this.btndir = this.add.image(300, 500, "btndir").setInteractive();
@@ -258,6 +243,14 @@ function create() {
     //this.cameras.main.startFollow(this.player);
 
     this.cameras.main.roundPixels = true;
+
+    this.socket.on('playerMoved', function (playerInfo) {
+        self.otherPlayers.getChildren().forEach(function (otherPlayer) {
+            if (playerInfo.playerId === otherPlayer.playerId) {
+                otherPlayer.setPosition(playerInfo.x, playerInfo.y);
+            }
+        });
+    });
 }
 
 function addPlayer(self, playerInfo) {
@@ -270,6 +263,21 @@ function addPlayer(self, playerInfo) {
     self.player.setCollideWorldBounds(true);
     self.player.setScale(1.5);
     self.player.setVelocity(0);
+
+    self.physics.add.collider(self.player, self.mapa);
+    
+    self.physics.add.collider(self.player, self.danoLava, () => {
+        self.player.disableBody(true, true);
+    });
+
+    self.physics.add.collider(self.player, self.danoEsp, () => {
+        self.player.disableBody(true, true);
+    });
+
+    self.physics.add.collider(self.player, self.obj, () => {
+        self.player.disableBody(true, true);
+    });
+
     //self.player.body.setAllowGravity(true);
 }
 
@@ -324,5 +332,24 @@ function update() {
         ) {
             this.player.setVelocityY(-250);
         }
+
+        // Emitir o movimento do jogador
+        var x = this.player.x;
+        var y = this.player.y;
+        /*
+            if (this.ship.oldPosition && (x !== this.ship.oldPosition.x || y !== this.ship.oldPosition.y || r !== this.ship.oldPosition.rotation)) {
+                this.socket.emit('playerMovement', { x: this.ship.x, y: this.ship.y, rotation: this.ship.rotation });
+            }
+        */
+        
+        if (this.player.oldPosition && (x !== this.player.oldPosition.x || y !== this.player.oldPosition.y)) {
+            this.socket.emit('playerMovement', { x: this.player.x, y: this.player.y });
+        }
+
+        // Guardar a posição antiga
+        this.player.oldPosition = {
+            x: this.player.x,
+            y: this.player.y
+        };
     }
 }
