@@ -47,16 +47,15 @@ function preload() {
 }
 
 function create() {
-
     var self = this;
 
     this.socket = io();
 
     this.otherPlayers = this.physics.add.group();
 
-    this.socket.on('currentPlayers', function (players){
-        Object.keys(players).forEach(function (id){
-            if(players[id].playerId === self.socket.id){
+    this.socket.on("currentPlayers", function(players) {
+        Object.keys(players).forEach(function(id) {
+            if (players[id].playerId === self.socket.id) {
                 addPlayer(self, players[id]);
             } else {
                 addOtherPlayers(self, players[id]);
@@ -64,13 +63,13 @@ function create() {
         });
     });
 
-    this.socket.on('newPlayer', function (playerInfo) {
+    this.socket.on("newPlayer", function(playerInfo) {
         addOtherPlayers(self, playerInfo);
     });
 
-    this.socket.on('disconnect', function (playerId) {
-        self.otherPlayers.getChildren().forEach(function (otherPlayer) {
-            if(playerId === otherPlayer.playerId) {
+    this.socket.on("disconnect", function(playerId) {
+        self.otherPlayers.getChildren().forEach(function(otherPlayer) {
+            if (playerId === otherPlayer.playerId) {
                 otherPlayer.destroy();
             }
         });
@@ -99,7 +98,7 @@ function create() {
     danoEsp.setCollisionByExclusion(-1, true);
 
     // adicionar colisões
-    this.physics.add.collider(this.player, mapa);
+    /* this.physics.add.collider(this.player, mapa);
 
     this.physics.add.collider(this.player, danoLava, () => {
         this.player.disableBody(true, true);
@@ -111,7 +110,7 @@ function create() {
 
     this.physics.add.collider(this.player, obj, () => {
         this.player.disableBody(true, true);
-    });
+    });*/
 
     // -- adionar botão direito
     this.btndir = this.add.image(300, 500, "btndir").setInteractive();
@@ -261,16 +260,26 @@ function create() {
     this.cameras.main.roundPixels = true;
 }
 
-function addPlayer(self, playerInfo){
-    self.player = self.physics.add.sprite(playerInfo.x, playerInfo.y, "player", 6);
+function addPlayer(self, playerInfo) {
+    self.player = self.physics.add.sprite(
+        playerInfo.x,
+        playerInfo.y,
+        "player",
+        6
+    );
     self.player.setCollideWorldBounds(true);
     self.player.setScale(1.5);
     self.player.setVelocity(0);
     //self.player.body.setAllowGravity(true);
 }
 
-function addOtherPlayers(self, playerInfo){
-    const otherPlayer = self.physics.add.sprite(playerInfo.x, playerInfo.y, "player", 6);
+function addOtherPlayers(self, playerInfo) {
+    const otherPlayer = self.physics.add.sprite(
+        playerInfo.x,
+        playerInfo.y,
+        "player",
+        6
+    );
     otherPlayer.setCollideWorldBounds(true);
     otherPlayer.setScale(1.5);
     otherPlayer.setVelocity(0);
@@ -280,7 +289,7 @@ function addOtherPlayers(self, playerInfo){
 }
 
 function update() {
-    if(this.player){
+    if (this.player) {
         if (
             this.direita == false &&
             this.esquerda == false &&
