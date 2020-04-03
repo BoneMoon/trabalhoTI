@@ -53,6 +53,10 @@ function create() {
 
     this.otherPlayers = this.physics.add.group();
 
+    this.tempoText = this.add.text(16, 16, '', { fontSize: '32px', fill: '#000000' });
+    this.timeOut = performance.now();
+    this.timer = 0;
+
     this.socket.on("currentPlayers", function(players) {
         Object.keys(players).forEach(function(id) {
             if (players[id].playerId === self.socket.id) {
@@ -268,6 +272,7 @@ function addPlayer(self, playerInfo) {
     
     self.physics.add.collider(self.player, self.danoLava, () => {
         self.player.disableBody(true, true);
+        //alert(self.timer);
     });
 
     self.physics.add.collider(self.player, self.danoEsp, () => {
@@ -297,6 +302,10 @@ function addOtherPlayers(self, playerInfo) {
 }
 
 function update() {
+
+    this.timer++;
+    this.tempoText.setText("Tempo: " + this.timer);
+
     if (this.player) {
         if (
             this.direita == false &&
@@ -352,4 +361,6 @@ function update() {
             y: this.player.y
         };
     }
+
+
 }
