@@ -3,30 +3,21 @@ const config = {
     parent: "content",
     width: 960,
     height: 640,
-    // scale: {
-    //     node: Phaser.Scale.RESIZE,
-    //     autoCenter: Phaser.Scale.CENTER_BOTH
-    // },
-    //zoom: 2,
     backgroundColor: "#ffffff",
     pixelArt: true,
     physics: {
         default: "arcade",
         arcade: {
             gravity: { y: 500 },
-            debug: true
-        }
+            debug: true,
+        },
     },
-    scene: {
-        preload: preload,
-        create: create,
-        update: update
-    }
+    scene: [BootScene, Wait, WorldScene, Menu],
 };
 
 const game = new Phaser.Game(config);
 
-function preload() {
+/*function preload() {
     this.load.image("chao", "assets/mapa/chao.png");
     this.load.image("porta", "assets/mapa/lava_porta.png");
     this.load.image("lava", "assets/mapa/lava_porta.png");
@@ -36,7 +27,7 @@ function preload() {
 
     this.load.spritesheet("player", "assets/img/RPG_assets.png", {
         frameWidth: 16,
-        frameHeight: 16
+        frameHeight: 16,
     });
 
     this.load.image("btndir", "assets/img/rightButton.png");
@@ -44,21 +35,24 @@ function preload() {
     this.load.image("btnup", "assets/img/upButton.png");
 
     //this.load.image("ceu", "assets/img/sky.png");
-}
+}*/
 
-function create() {
+/*function create() {
     var self = this;
 
     this.socket = io();
 
-    this.otherPlayers = this.physics.add.group();
-
-    this.tempoText = this.add.text(16, 16, '', { fontSize: '32px', fill: '#000000' });
+    this.tempoText = this.add.text(16, 16, "", {
+        fontSize: "32px",
+        fill: "#000000",
+    });
     this.timeOut = performance.now();
     this.timer = 0;
 
-    this.socket.on("currentPlayers", function(players) {
-        Object.keys(players).forEach(function(id) {
+    this.otherPlayers = this.physics.add.group();
+
+    this.socket.on("currentPlayers", function (players) {
+        Object.keys(players).forEach(function (id) {
             if (players[id].playerId === self.socket.id) {
                 addPlayer(self, players[id]);
             } else {
@@ -67,12 +61,17 @@ function create() {
         });
     });
 
-    this.socket.on("newPlayer", function(playerInfo) {
+    this.socket.on("newPlayer", function (playerInfo) {
         addOtherPlayers(self, playerInfo);
     });
 
-    this.socket.on("disconnect", function(playerId) {
-        self.otherPlayers.getChildren().forEach(function(otherPlayer) {
+    this.socket.on("espera", function () {
+        console.log("asdasd");
+        self.scene.start("Wait");
+    });
+
+    this.socket.on("disconnect", function (playerId) {
+        self.otherPlayers.getChildren().forEach(function (otherPlayer) {
             if (playerId === otherPlayer.playerId) {
                 otherPlayer.destroy();
             }
@@ -108,7 +107,7 @@ function create() {
 
     this.btndir.on(
         "pointerover",
-        function() {
+        function () {
             this.direita = true;
         },
 
@@ -116,7 +115,7 @@ function create() {
     );
     this.btndir.on(
         "pointerdown",
-        function() {
+        function () {
             this.direita = true;
             console.log("Olá :D");
             //this.player.setVelocityX(180);
@@ -126,7 +125,7 @@ function create() {
 
     this.btndir.on(
         "pointerout",
-        function() {
+        function () {
             this.direita = false;
         },
 
@@ -144,7 +143,7 @@ function create() {
 
     this.btnesq.on(
         "pointerover",
-        function() {
+        function () {
             this.esquerda = true;
         },
 
@@ -152,7 +151,7 @@ function create() {
     );
     this.btnesq.on(
         "pointerdown",
-        function() {
+        function () {
             this.esquerda = true;
         },
         this
@@ -160,7 +159,7 @@ function create() {
 
     this.btnesq.on(
         "pointerout",
-        function() {
+        function () {
             this.esquerda = false;
         },
 
@@ -178,7 +177,7 @@ function create() {
 
     this.btnup.on(
         "pointerover",
-        function() {
+        function () {
             this.cima = true;
         },
 
@@ -186,7 +185,7 @@ function create() {
     );
     this.btnup.on(
         "pointerdown",
-        function() {
+        function () {
             this.cima = true;
         },
         this
@@ -194,7 +193,7 @@ function create() {
 
     this.btnup.on(
         "pointerout",
-        function() {
+        function () {
             this.cima = false;
         },
 
@@ -209,37 +208,37 @@ function create() {
     this.anims.create({
         key: "left",
         frames: this.anims.generateFrameNumbers("player", {
-            frames: [1, 7, 1, 13]
+            frames: [1, 7, 1, 13],
         }),
         frameRate: 10,
-        repeat: -1
+        repeat: -1,
     });
 
     this.anims.create({
         key: "right",
         frames: this.anims.generateFrameNumbers("player", {
-            frames: [1, 7, 1, 13]
+            frames: [1, 7, 1, 13],
         }),
         frameRate: 10,
-        repeat: -1
+        repeat: -1,
     });
 
     this.anims.create({
         key: "up",
         frames: this.anims.generateFrameNumbers("player", {
-            frames: [2, 8, 2, 14]
+            frames: [2, 8, 2, 14],
         }),
         frameRate: 10,
-        repeat: -1
+        repeat: -1,
     });
 
     this.anims.create({
         key: "down",
         frames: this.anims.generateFrameNumbers("player", {
-            frames: [0, 6, 0, 12]
+            frames: [0, 6, 0, 12],
         }),
         frameRate: 10,
-        repeat: -1
+        repeat: -1,
     });
 
     this.cameras.main.setBounds(0, 0, 960, 640);
@@ -248,16 +247,16 @@ function create() {
 
     this.cameras.main.roundPixels = true;
 
-    this.socket.on('playerMoved', function (playerInfo) {
+    this.socket.on("playerMoved", function (playerInfo) {
         self.otherPlayers.getChildren().forEach(function (otherPlayer) {
             if (playerInfo.playerId === otherPlayer.playerId) {
                 otherPlayer.setPosition(playerInfo.x, playerInfo.y);
             }
         });
     });
-}
+}*/
 
-function addPlayer(self, playerInfo) {
+/*function addPlayer(self, playerInfo) {
     self.player = self.physics.add.sprite(
         playerInfo.x,
         playerInfo.y,
@@ -269,7 +268,7 @@ function addPlayer(self, playerInfo) {
     self.player.setVelocity(0);
 
     self.physics.add.collider(self.player, self.mapa);
-    
+
     self.physics.add.collider(self.player, self.danoLava, () => {
         self.player.disableBody(true, true);
         //alert(self.timer);
@@ -299,10 +298,9 @@ function addOtherPlayers(self, playerInfo) {
 
     otherPlayer.playerId = playerInfo.playerId;
     self.otherPlayers.add(otherPlayer);
-}
+}*/
 
-function update() {
-
+/*function update() {
     this.timer++;
     this.tempoText.setText("Tempo: " + this.timer);
 
@@ -345,22 +343,21 @@ function update() {
         // Emitir o movimento do jogador
         var x = this.player.x;
         var y = this.player.y;
-        /*
-            if (this.ship.oldPosition && (x !== this.ship.oldPosition.x || y !== this.ship.oldPosition.y || r !== this.ship.oldPosition.rotation)) {
-                this.socket.emit('playerMovement', { x: this.ship.x, y: this.ship.y, rotation: this.ship.rotation });
-            }
-        */
-        
-        if (this.player.oldPosition && (x !== this.player.oldPosition.x || y !== this.player.oldPosition.y)) {
-            this.socket.emit('playerMovement', { x: this.player.x, y: this.player.y });
+
+        if (
+            this.player.oldPosition &&
+            (x !== this.player.oldPosition.x || y !== this.player.oldPosition.y)
+        ) {
+            this.socket.emit("playerMovement", {
+                x: this.player.x,
+                y: this.player.y,
+            });
         }
 
         // Guardar a posição antiga
         this.player.oldPosition = {
             x: this.player.x,
-            y: this.player.y
+            y: this.player.y,
         };
     }
-
-
-}
+}*/
