@@ -25,29 +25,31 @@ io.on("connection", function (socket) {
         playerId: socket.id,
         i: i++,
     };
+    console.log(players[socket.id].i);
 
-    if (players[socket.id].i < 2) {
-        socket.emit("espera");
-    }
-
-    if (players[socket.id].i > 2) {
+    if (lista.length > 2) {
         socket.emit("lotado");
     }
 
-    if (players[socket.id].i == 2) {
-        // send the players object to the new player
-        socket.emit("currentPlayers", players);
-
-        // update all other players of the new player
-        socket.broadcast.emit("newPlayer", players[socket.id]);
-
-        console.log(players[socket.id].i);
+    if (lista.length < 2) {
+        socket.emit("espera");
     }
+
+    if (lista.length == 2) {
+        socket.emit("ready");
+    }
+
+    // send the players object to the new player
+    socket.emit("currentPlayers", players);
+
+    // update all other players of the new player
+    socket.broadcast.emit("newPlayer", players[socket.id]);
 
     socket.on("disconnect", function () {
         console.log("a user disconnected", socket.id);
         i--;
 
+        console.log(lista);
         delete players[socket.id];
 
         io.emit("disconnect", socket.id);

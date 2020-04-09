@@ -21,18 +21,37 @@ var Menu = new Phaser.Class({
         this.tenta2.setScale(0.2);
         this.tenta2.setScrollFactor(0);
 
-        this.tenta2.on("pointerup", () => {
-            this.socket.on("espera", function () {
-                console.log("asdasd");
-                alert("Espera de jogadores!");
-            });
+        this.socket.on("espera", function () {
+            self.tenta2.on(
+                "pointerup",
+                function () {
+                    console.log("espera");
+                    alert("Espera por outros jogadores");
+                },
+                self
+            );
+        });
 
-            this.socket.on("lotado", function () {
-                console.log("asdasd");
-                alert("Jogo a Decorrer!");
-            });
+        this.socket.on("lotado", function () {
+            self.tenta2.on(
+                "pointerup",
+                function () {
+                    console.log("lotado");
+                    alert("Jogo a Decorrer! Espere que o jogo acabe");
+                },
+                self
+            );
+        });
 
-            this.scene.start("WorldScene");
+        this.socket.on("ready", function () {
+            self.tenta2.on(
+                "pointerup",
+                function () {
+                    console.log("JOGAR");
+                    this.scene.start("WorldScene");
+                },
+                self
+            );
         });
     },
 });
