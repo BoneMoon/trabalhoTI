@@ -19,7 +19,7 @@ var WorldScene = new Phaser.Class({
         });
         this.timeOut = performance.now();
         this.timer = 0;
-
+/*
         this.socket.on("ready", function () {
             self.start();
         });
@@ -27,7 +27,7 @@ var WorldScene = new Phaser.Class({
         this.socket.on("espera", function () {
             self.wait();
         });
-
+*/
         this.otherPlayers = this.physics.add.group();
 
         this.socket.on("currentPlayers", function (players) {
@@ -73,6 +73,7 @@ var WorldScene = new Phaser.Class({
         this.mapa.setCollisionByExclusion(-1, true);
         this.danoLava.setCollisionByExclusion(-1, true);
         this.danoEsp.setCollisionByExclusion(-1, true);
+        this.obj.setCollisionByExclusion(-1, true);
 
         // -- adionar botão direito
         this.btndir = this.add.image(300, 500, "btndir").setInteractive();
@@ -250,10 +251,12 @@ var WorldScene = new Phaser.Class({
 
         self.physics.add.collider(self.player, self.danoEsp, () => {
             self.player.disableBody(true, true);
+
         });
 
         self.physics.add.collider(self.player, self.obj, () => {
             self.player.disableBody(true, true);
+            this.socket.emit("tempoFinal", self.timer);
         });
     },
 
@@ -268,12 +271,27 @@ var WorldScene = new Phaser.Class({
         otherPlayer.setScale(1.5);
         otherPlayer.setVelocity(0);
 
+        self.physics.add.collider(otherPlayer, self.mapa);
+
+        self.physics.add.collider(otherPlayer, self.danoLava, () => {
+            otherPlayer.disableBody(true, true);
+            //alert(self.timer);
+        });
+
+        self.physics.add.collider(otherPlayer, self.danoEsp, () => {
+            otherPlayer.disableBody(true, true);
+        });
+
+        self.physics.add.collider(otherPlayer, self.obj, () => {
+            otherPlayer.disableBody(true, true);
+        });
+
         otherPlayer.playerId = playerInfo.playerId;
         self.otherPlayers.add(otherPlayer);
     },
 
+/*
     start: function () {
-        this.asda = true;
         this.jogo = 1;
         console.log(this.jogo);
         this.update();
@@ -286,18 +304,19 @@ var WorldScene = new Phaser.Class({
         });
         this.jogo = 0;
 
-        /*if (this.jogo == 1) {
+        if (this.jogo == 1) {
             this.espera = this.add.text(50, 50, "", {
                 fontSize: "32px",
                 fill: "#000000",
             });
             console.log("AQUI");
             this.update();
-        }*/
+        }
     },
+*/
 
     update: function () {
-        if (this.jogo == 1) {
+        //if (this.jogo == 1) {
             this.timer++;
             this.tempoText.setText("Tempo: " + this.timer);
             if (this.player) {
@@ -357,6 +376,6 @@ var WorldScene = new Phaser.Class({
                     y: this.player.y,
                 };
             }
-        }
+        //}
     },
 });

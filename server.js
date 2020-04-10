@@ -5,10 +5,9 @@ var io = require("socket.io").listen(server);
 
 var players = {};
 
-var tempo = 0;
-
 var i = 1;
 var lista = [];
+var tempo = 0;
 
 app.use(express.static(__dirname + "/public"));
 
@@ -25,23 +24,34 @@ io.on("connection", function (socket) {
         y: 400,
         playerId: socket.id,
         i: i++,
+        tempo
     };
-    console.log(players[socket.id].i);
-    lista.push(players[socket.id]);
-    console.log(lista);
+    
+    //console.log(players[socket.id].i);
 
+    lista.push(players[socket.id]);
+    //console.log(lista);
+/*
     if (lista.length < 2) {
         socket.emit("espera");
     }
 
     if (lista.length == 2) {
         socket.emit("ready");
+        
+        // send the players object to the new player
+        socket.emit("currentPlayers", players);
+
+        // update all other players of the new player
+        socket.broadcast.emit("newPlayer", players[socket.id]);
+        
     }
 
     if (lista.length > 2) {
         socket.emit("lotado");
     }
 
+*/
     // send the players object to the new player
     socket.emit("currentPlayers", players);
 
@@ -64,6 +74,21 @@ io.on("connection", function (socket) {
         players[socket.id].y = movementData.y;
 
         socket.broadcast.emit("playerMoved", players[socket.id]);
+    });
+
+    socket.on("tempoFinal", function (timer) {
+        players[socket.id].tempo = timer;
+
+        //console.log(players[socket.id]);
+
+        for (let i = 0; i < players[socket.id].length; i++) {
+            if (players[0].tempo > players[1].tempo) {
+                console.log("Ganhou");
+            }else if(players[0].tempo < players[1].tempo){
+                console.log("Perdeu");
+            }
+            
+        }
     });
 });
 
