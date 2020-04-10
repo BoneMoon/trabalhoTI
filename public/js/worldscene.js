@@ -9,6 +9,7 @@ var WorldScene = new Phaser.Class({
 
     create: function () {
         var self = this;
+        this.jogo = 0;
 
         this.socket = io();
 
@@ -18,6 +19,14 @@ var WorldScene = new Phaser.Class({
         });
         this.timeOut = performance.now();
         this.timer = 0;
+
+        this.socket.on("ready", function () {
+            self.start();
+        });
+
+        this.socket.on("espera", function () {
+            self.wait();
+        });
 
         this.otherPlayers = this.physics.add.group();
 
@@ -32,14 +41,8 @@ var WorldScene = new Phaser.Class({
         });
 
         this.socket.on("newPlayer", function (playerInfo) {
-            addOtherPlayers(self, playerInfo);
+            self.addOtherPlayers(self, playerInfo);
         });
-
-        /* this.socket.on("espera", function () {
-            console.log("asdasd");
-            //self.scene.start("Wait");
-            alert("Espera de jogadores!");
-        });*/
 
         this.socket.on("disconnect", function (playerId) {
             self.otherPlayers.getChildren().forEach(function (otherPlayer) {
@@ -252,8 +255,6 @@ var WorldScene = new Phaser.Class({
         self.physics.add.collider(self.player, self.obj, () => {
             self.player.disableBody(true, true);
         });
-
-        //self.player.body.setAllowGravity(true);
     },
 
     addOtherPlayers: function (self, playerInfo) {
@@ -271,66 +272,91 @@ var WorldScene = new Phaser.Class({
         self.otherPlayers.add(otherPlayer);
     },
 
+    start: function () {
+        this.asda = true;
+        this.jogo = 1;
+        console.log(this.jogo);
+        this.update();
+    },
+
+    wait: function () {
+        this.espera = this.add.text(50, 50, "À espera de jogadores", {
+            fontSize: "32px",
+            fill: "#000000",
+        });
+        this.jogo = 0;
+
+        /*if (this.jogo == 1) {
+            this.espera = this.add.text(50, 50, "", {
+                fontSize: "32px",
+                fill: "#000000",
+            });
+            console.log("AQUI");
+            this.update();
+        }*/
+    },
+
     update: function () {
-        this.timer++;
-        this.tempoText.setText("Tempo: " + this.timer);
+        if (this.jogo == 1) {
+            this.timer++;
+            this.tempoText.setText("Tempo: " + this.timer);
+            if (this.player) {
+                if (
+                    this.direita == false &&
+                    this.esquerda == false &&
+                    this.cima == false
+                ) {
+                    this.player.body.setVelocityX(0);
+                    this.player.anims.stop();
+                } else if (
+                    this.direita == true &&
+                    this.esquerda == false &&
+                    this.cima == false
+                ) {
+                    this.player.body.setVelocityX(180);
+                    this.player.anims.play("right", true);
+                    this.player.flipX = false;
+                }
+                if (
+                    this.esquerda == true &&
+                    this.direita == false &&
+                    this.cima == false
+                ) {
+                    this.player.body.setVelocityX(-180);
+                    this.player.anims.play("left", true);
+                    this.player.flipX = true;
+                }
 
-        if (this.player) {
-            if (
-                this.direita == false &&
-                this.esquerda == false &&
-                this.cima == false
-            ) {
-                this.player.body.setVelocityX(0);
-                this.player.anims.stop();
-            } else if (
-                this.direita == true &&
-                this.esquerda == false &&
-                this.cima == false
-            ) {
-                this.player.body.setVelocityX(180);
-                this.player.anims.play("right", true);
-                this.player.flipX = false;
-            }
-            if (
-                this.esquerda == true &&
-                this.direita == false &&
-                this.cima == false
-            ) {
-                this.player.body.setVelocityX(-180);
-                this.player.anims.play("left", true);
-                this.player.flipX = true;
-            }
+                if (
+                    this.cima == true &&
+                    this.esquerda == false &&
+                    this.direita == false &&
+                    this.player.body.onFloor()
+                ) {
+                    this.player.setVelocityY(-250);
+                }
 
-            if (
-                this.cima == true &&
-                this.esquerda == false &&
-                this.direita == false &&
-                this.player.body.onFloor()
-            ) {
-                this.player.setVelocityY(-250);
-            }
+                // Emitir o movimento do jogador
+                var x = this.player.x;
+                var y = this.player.y;
 
-            // Emitir o movimento do jogador
-            var x = this.player.x;
-            var y = this.player.y;
+                if (
+                    this.player.oldPosition &&
+                    (x !== this.player.oldPosition.x ||
+                        y !== this.player.oldPosition.y)
+                ) {
+                    this.socket.emit("playerMovement", {
+                        x: this.player.x,
+                        y: this.player.y,
+                    });
+                }
 
-            if (
-                this.player.oldPosition &&
-                (x !== this.player.oldPosition.x ||
-                    y !== this.player.oldPosition.y)
-            ) {
-                this.socket.emit("playerMovement", {
+                // Guardar a posição antiga
+                this.player.oldPosition = {
                     x: this.player.x,
                     y: this.player.y,
-                });
+                };
             }
-
-            // Guardar a posição antiga
-            this.player.oldPosition = {
-                x: this.player.x,
-                y: this.player.y,
-            };
         }
     },
 });

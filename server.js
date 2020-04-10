@@ -8,6 +8,7 @@ var players = {};
 var tempo = 0;
 
 var i = 1;
+var lista = [];
 
 app.use(express.static(__dirname + "/public"));
 
@@ -26,10 +27,8 @@ io.on("connection", function (socket) {
         i: i++,
     };
     console.log(players[socket.id].i);
-
-    if (lista.length > 2) {
-        socket.emit("lotado");
-    }
+    lista.push(players[socket.id]);
+    console.log(lista);
 
     if (lista.length < 2) {
         socket.emit("espera");
@@ -37,6 +36,10 @@ io.on("connection", function (socket) {
 
     if (lista.length == 2) {
         socket.emit("ready");
+    }
+
+    if (lista.length > 2) {
+        socket.emit("lotado");
     }
 
     // send the players object to the new player
@@ -49,7 +52,8 @@ io.on("connection", function (socket) {
         console.log("a user disconnected", socket.id);
         i--;
 
-        console.log(lista);
+        lista.length--;
+        //console.log(lista);
         delete players[socket.id];
 
         io.emit("disconnect", socket.id);

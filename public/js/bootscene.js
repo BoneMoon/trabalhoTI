@@ -24,6 +24,6 @@ var BootScene = new Phaser.Class({
     },
 
     create: function () {
-        this.scene.start("Menu");
+        this.scene.start("WorldScene");
     },
 });
