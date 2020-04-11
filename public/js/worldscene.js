@@ -19,7 +19,7 @@ var WorldScene = new Phaser.Class({
         });
         this.timeOut = performance.now();
         this.timer = 0;
-/*
+        /*
         this.socket.on("ready", function () {
             self.start();
         });
@@ -245,13 +245,11 @@ var WorldScene = new Phaser.Class({
         self.physics.add.collider(self.player, self.mapa);
 
         self.physics.add.collider(self.player, self.danoLava, () => {
-            self.player.disableBody(true, true);
-            //alert(self.timer);
+            self.player.setPosition(30, 400);
         });
 
         self.physics.add.collider(self.player, self.danoEsp, () => {
-            self.player.disableBody(true, true);
-
+            self.player.setPosition(30, 400);
         });
 
         self.physics.add.collider(self.player, self.obj, () => {
@@ -274,23 +272,23 @@ var WorldScene = new Phaser.Class({
         self.physics.add.collider(otherPlayer, self.mapa);
 
         self.physics.add.collider(otherPlayer, self.danoLava, () => {
-            otherPlayer.disableBody(true, true);
-            //alert(self.timer);
+            otherPlayer.setPosition(30, 400);
         });
 
         self.physics.add.collider(otherPlayer, self.danoEsp, () => {
-            otherPlayer.disableBody(true, true);
+            otherPlayer.setPosition(30, 400);
         });
 
         self.physics.add.collider(otherPlayer, self.obj, () => {
             otherPlayer.disableBody(true, true);
+            this.socket.emit("tempoFinal", self.timer);
         });
 
         otherPlayer.playerId = playerInfo.playerId;
         self.otherPlayers.add(otherPlayer);
     },
 
-/*
+    /*
     start: function () {
         this.jogo = 1;
         console.log(this.jogo);
@@ -317,65 +315,65 @@ var WorldScene = new Phaser.Class({
 
     update: function () {
         //if (this.jogo == 1) {
-            this.timer++;
-            this.tempoText.setText("Tempo: " + this.timer);
-            if (this.player) {
-                if (
-                    this.direita == false &&
-                    this.esquerda == false &&
-                    this.cima == false
-                ) {
-                    this.player.body.setVelocityX(0);
-                    this.player.anims.stop();
-                } else if (
-                    this.direita == true &&
-                    this.esquerda == false &&
-                    this.cima == false
-                ) {
-                    this.player.body.setVelocityX(180);
-                    this.player.anims.play("right", true);
-                    this.player.flipX = false;
-                }
-                if (
-                    this.esquerda == true &&
-                    this.direita == false &&
-                    this.cima == false
-                ) {
-                    this.player.body.setVelocityX(-180);
-                    this.player.anims.play("left", true);
-                    this.player.flipX = true;
-                }
+        this.timer++;
+        this.tempoText.setText("Tempo: " + this.timer);
+        if (this.player) {
+            if (
+                this.direita == false &&
+                this.esquerda == false &&
+                this.cima == false
+            ) {
+                this.player.body.setVelocityX(0);
+                this.player.anims.stop();
+            } else if (
+                this.direita == true &&
+                this.esquerda == false &&
+                this.cima == false
+            ) {
+                this.player.body.setVelocityX(180);
+                this.player.anims.play("right", true);
+                this.player.flipX = false;
+            }
+            if (
+                this.esquerda == true &&
+                this.direita == false &&
+                this.cima == false
+            ) {
+                this.player.body.setVelocityX(-180);
+                this.player.anims.play("left", true);
+                this.player.flipX = true;
+            }
 
-                if (
-                    this.cima == true &&
-                    this.esquerda == false &&
-                    this.direita == false &&
-                    this.player.body.onFloor()
-                ) {
-                    this.player.setVelocityY(-250);
-                }
+            if (
+                this.cima == true &&
+                this.esquerda == false &&
+                this.direita == false &&
+                this.player.body.onFloor()
+            ) {
+                this.player.setVelocityY(-250);
+            }
 
-                // Emitir o movimento do jogador
-                var x = this.player.x;
-                var y = this.player.y;
+            // Emitir o movimento do jogador
+            var x = this.player.x;
+            var y = this.player.y;
 
-                if (
-                    this.player.oldPosition &&
-                    (x !== this.player.oldPosition.x ||
-                        y !== this.player.oldPosition.y)
-                ) {
-                    this.socket.emit("playerMovement", {
-                        x: this.player.x,
-                        y: this.player.y,
-                    });
-                }
-
-                // Guardar a posição antiga
-                this.player.oldPosition = {
+            if (
+                this.player.oldPosition &&
+                (x !== this.player.oldPosition.x ||
+                    y !== this.player.oldPosition.y)
+            ) {
+                this.socket.emit("playerMovement", {
                     x: this.player.x,
                     y: this.player.y,
-                };
+                });
             }
+
+            // Guardar a posição antiga
+            this.player.oldPosition = {
+                x: this.player.x,
+                y: this.player.y,
+            };
+        }
         //}
     },
 });
