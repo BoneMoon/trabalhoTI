@@ -7,6 +7,7 @@ var players = {};
 
 var i = 1;
 var lista = [];
+var listaTempo = [];
 var tempo = 0;
 
 app.use(express.static(__dirname + "/public"));
@@ -24,14 +25,14 @@ io.on("connection", function (socket) {
         y: 400,
         playerId: socket.id,
         i: i++,
-        tempo
+        tempo,
     };
-    
+
     //console.log(players[socket.id].i);
 
     lista.push(players[socket.id]);
     //console.log(lista);
-/*
+    /*
     if (lista.length < 2) {
         socket.emit("espera");
     }
@@ -78,16 +79,17 @@ io.on("connection", function (socket) {
 
     socket.on("tempoFinal", function (timer) {
         players[socket.id].tempo = timer;
+        listaTempo.push(players[socket.id].tempo);
 
-        //console.log(players[socket.id]);
+        console.log(listaTempo);
 
-        for (let i = 0; i < players[socket.id].length; i++) {
-            if (players[0].tempo > players[1].tempo) {
-                console.log("Ganhou");
-            }else if(players[0].tempo < players[1].tempo){
-                console.log("Perdeu");
-            }
-            
+        if (listaTempo[0] < listaTempo[1] || listaTempo[1] < listaTempo[0]) {
+            console.log("Ganhou");
+            socket.emit("youWin");
+        }
+        if (listaTempo[1] > listaTempo[0] || listaTempo[0] > listaTempo[1]) {
+            console.log("Perdeu");
+            socket.emit("youLose");
         }
     });
 });

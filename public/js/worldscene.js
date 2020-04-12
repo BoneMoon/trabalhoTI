@@ -52,6 +52,13 @@ var WorldScene = new Phaser.Class({
             });
         });
 
+        /*this.socket.on("youWin", function () {
+            self.scene.start("youWin");
+        });
+        this.socket.on("youLose", function () {
+            self.scene.start("youLose");
+        });*/
+
         this.direita = false;
         this.esquerda = false;
         this.cima = false;
@@ -249,7 +256,7 @@ var WorldScene = new Phaser.Class({
         });
 
         self.physics.add.collider(self.player, self.danoEsp, () => {
-            self.player.setPosition(30, 400);
+            //self.player.setPosition(30, 400);
         });
 
         self.physics.add.collider(self.player, self.obj, () => {
@@ -276,7 +283,7 @@ var WorldScene = new Phaser.Class({
         });
 
         self.physics.add.collider(otherPlayer, self.danoEsp, () => {
-            otherPlayer.setPosition(30, 400);
+            //otherPlayer.setPosition(30, 400);
         });
 
         self.physics.add.collider(otherPlayer, self.obj, () => {
