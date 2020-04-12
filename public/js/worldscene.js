@@ -52,12 +52,12 @@ var WorldScene = new Phaser.Class({
             });
         });
 
-        /*this.socket.on("youWin", function () {
+        this.socket.on("youWin", function () {
             self.scene.start("youWin");
         });
         this.socket.on("youLose", function () {
             self.scene.start("youLose");
-        });*/
+        });
 
         this.direita = false;
         this.esquerda = false;
@@ -288,7 +288,6 @@ var WorldScene = new Phaser.Class({
 
         self.physics.add.collider(otherPlayer, self.obj, () => {
             otherPlayer.disableBody(true, true);
-            this.socket.emit("tempoFinal", self.timer);
         });
 
         otherPlayer.playerId = playerInfo.playerId;

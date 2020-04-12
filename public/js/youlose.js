@@ -8,7 +8,7 @@ var youLose = new Phaser.Class({
     preload() {},
 
     create() {
-        this.add.text(50, 50, "Pedeste!!!", {
+        this.add.text(50, 50, "Perdeste!!!", {
             fontSize: "32px",
             fill: "#000000",
         });

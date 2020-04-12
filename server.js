@@ -79,17 +79,22 @@ io.on("connection", function (socket) {
 
     socket.on("tempoFinal", function (timer) {
         players[socket.id].tempo = timer;
-        listaTempo.push(players[socket.id].tempo);
+        listaTempo.push({ time: players[socket.id].tempo, socket });
 
         console.log(listaTempo);
 
-        if (listaTempo[0] < listaTempo[1] || listaTempo[1] < listaTempo[0]) {
-            console.log("Ganhou");
-            socket.emit("youWin");
-        }
-        if (listaTempo[1] > listaTempo[0] || listaTempo[0] > listaTempo[1]) {
-            console.log("Perdeu");
-            socket.emit("youLose");
+        if (listaTempo.length >= 2) {
+            if (listaTempo[0].time < listaTempo[1].time) {
+                listaTempo[0].socket.emit("youWin");
+                listaTempo[1].socket.emit("youLose");
+                listaTempo = [];
+            } else if (listaTempo[1].time < listaTempo[0].time) {
+                listaTempo[1].socket.emit("youWin");
+                listaTempo[0].socket.emit("youLose");
+                listaTempo = [];
+            } else {
+                console.log("asdasd");
+            }
         }
     });
 });
