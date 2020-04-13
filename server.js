@@ -32,32 +32,24 @@ io.on("connection", function (socket) {
 
     lista.push(players[socket.id]);
     //console.log(lista);
-    /*
+
     if (lista.length < 2) {
-        socket.emit("espera");
+        io.emit("espera");
     }
 
     if (lista.length == 2) {
-        socket.emit("ready");
-        
-        // send the players object to the new player
-        socket.emit("currentPlayers", players);
-
-        // update all other players of the new player
-        socket.broadcast.emit("newPlayer", players[socket.id]);
-        
+        io.emit("ready");
     }
 
-    if (lista.length > 2) {
-        socket.emit("lotado");
-    }
-
-*/
     // send the players object to the new player
     socket.emit("currentPlayers", players);
 
     // update all other players of the new player
     socket.broadcast.emit("newPlayer", players[socket.id]);
+
+    /*if (lista.length > 2) {
+        socket.emit("lotado");
+    }*/
 
     socket.on("disconnect", function () {
         console.log("a user disconnected", socket.id);
