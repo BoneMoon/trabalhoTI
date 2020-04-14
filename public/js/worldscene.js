@@ -59,6 +59,11 @@ var WorldScene = new Phaser.Class({
             self.scene.start("youLose");
         });
 
+        this.espera = this.add.text(50, 50, "", {
+            fontSize: "32px",
+            fill: "#000000",
+        });
+
         this.direita = false;
         this.esquerda = false;
         this.cima = false;
@@ -297,11 +302,8 @@ var WorldScene = new Phaser.Class({
     },
 
     wait: function () {
-        this.espera = this.add.text(50, 50, "À espera de jogadores", {
-            fontSize: "32px",
-            fill: "#000000",
-        });
         this.jogo = 0;
+        this.espera.setText("À espera de jogadores");
     },
 
     start: function () {
