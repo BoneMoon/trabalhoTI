@@ -64,6 +64,11 @@ var WorldScene = new Phaser.Class({
             fill: "#000000",
         });
 
+        /*this.lotado = this.add.text(50, 50, "", {
+            fontSize: "32px",
+            fill: "#000000",
+        });*/
+
         this.direita = false;
         this.esquerda = false;
         this.cima = false;
@@ -310,10 +315,8 @@ var WorldScene = new Phaser.Class({
 
         if (this.jogo == 1) {
             this.espera.setText("");
-            console.log("AQUI");
             this.update();
         }
-        //this.update();
     },
 
     update: function () {
