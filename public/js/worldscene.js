@@ -104,8 +104,6 @@ var WorldScene = new Phaser.Class({
             "pointerdown",
             function () {
                 this.direita = true;
-                console.log("Olá :D");
-                //this.player.setVelocityX(180);
             },
             this
         );
