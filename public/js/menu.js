@@ -8,14 +8,14 @@ var Menu = new Phaser.Class({
     preload() {},
 
     create() {
-        var self = this;
+        //var self = this;
 
-        this.socket = io();
-
-        this.add.text(60, 110, "Nome do Jogo", {
+        this.menu = this.add.text(60, 110, "Nome do Jogo", {
             fontSize: "40px",
             fill: "#000000",
         });
+
+        //this.socket.on("menu", function () {});
 
         this.tenta2 = this.add.image(300, 500, "btndir").setInteractive();
         this.tenta2.setScale(0.2);
@@ -29,7 +29,7 @@ var Menu = new Phaser.Class({
             this
         );
 
-        this.socket.on("lotado", function () {
+        /* this.socket.on("lotado", function () {
             self.tenta2.on(
                 "pointerup",
                 function () {
@@ -38,6 +38,6 @@ var Menu = new Phaser.Class({
                 },
                 self
             );
-        });
+        });*/
     },
 });

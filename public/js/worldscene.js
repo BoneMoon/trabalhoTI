@@ -28,9 +28,8 @@ var WorldScene = new Phaser.Class({
             self.wait();
         });
 
-        this.otherPlayers = this.physics.add.group();
-
         this.socket.on("currentPlayers", function (players) {
+            console.log("Currr");
             Object.keys(players).forEach(function (id) {
                 if (players[id].playerId === self.socket.id) {
                     self.addPlayer(self, players[id]);
@@ -41,6 +40,7 @@ var WorldScene = new Phaser.Class({
         });
 
         this.socket.on("newPlayer", function (playerInfo) {
+            console.log("newPlayer");
             self.addOtherPlayers(self, playerInfo);
         });
 
@@ -54,9 +54,11 @@ var WorldScene = new Phaser.Class({
 
         this.socket.on("youWin", function () {
             self.scene.start("youWin");
+            this.socket.disconnect();
         });
         this.socket.on("youLose", function () {
             self.scene.start("youLose");
+            this.socket.disconnect();
         });
 
         this.espera = this.add.text(50, 50, "", {
@@ -274,6 +276,8 @@ var WorldScene = new Phaser.Class({
     },
 
     addOtherPlayers: function (self, playerInfo) {
+        this.otherPlayers = this.physics.add.group();
+
         const otherPlayer = self.physics.add.sprite(
             playerInfo.x,
             playerInfo.y,
@@ -300,8 +304,6 @@ var WorldScene = new Phaser.Class({
 
         otherPlayer.playerId = playerInfo.playerId;
         self.otherPlayers.add(otherPlayer);
-
-        console.log("asdasd");
     },
 
     wait: function () {

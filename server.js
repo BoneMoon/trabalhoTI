@@ -19,6 +19,8 @@ app.get("/", function (req, res) {
 io.on("connection", function (socket) {
     console.log("a user connected", socket.id);
 
+    //io.emit("menu");
+
     // create a new player and add it to our players object
     players[socket.id] = {
         x: /*30*/ Math.floor(Math.random() * 70),
@@ -27,6 +29,8 @@ io.on("connection", function (socket) {
         i: i++,
         tempo,
     };
+
+    console.log("asdasdasd");
 
     //console.log(players[socket.id].i);
 
@@ -39,17 +43,17 @@ io.on("connection", function (socket) {
 
     if (lista.length == 2) {
         io.emit("ready");
+
+        // send the players object to the new player
+        socket.emit("currentPlayers", players);
+
+        // update all other players of the new player
+        socket.broadcast.emit("newPlayer", players[socket.id]);
     }
 
     /*if (lista.length > 2) {
         io.emit("lotado");
     }*/
-
-    // send the players object to the new player
-    socket.emit("currentPlayers", players);
-
-    // update all other players of the new player
-    socket.broadcast.emit("newPlayer", players[socket.id]);
 
     socket.on("disconnect", function () {
         console.log("a user disconnected", socket.id);
