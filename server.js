@@ -19,8 +19,6 @@ app.get("/", function (req, res) {
 io.on("connection", function (socket) {
     console.log("a user connected", socket.id);
 
-    //io.emit("menu");
-
     // create a new player and add it to our players object
     players[socket.id] = {
         x: /*30*/ Math.floor(Math.random() * 70),
@@ -28,49 +26,73 @@ io.on("connection", function (socket) {
         playerId: socket.id,
         i: i++,
         tempo,
+        socket,
+        playing: false,
     };
 
-    console.log("asdasdasd");
-
-    //console.log(players[socket.id].i);
-
     lista.push(players[socket.id]);
-    //console.log(lista);
 
     if (lista.length < 2) {
         io.emit("espera");
     }
 
     if (lista.length == 2) {
+        for (const p of lista) {
+            p.playing = true;
+        }
         io.emit("ready");
-
-        // send the players object to the new player
-        socket.emit("currentPlayers", players);
-
-        // update all other players of the new player
-        socket.broadcast.emit("newPlayer", players[socket.id]);
     }
 
-    /*if (lista.length > 2) {
-        io.emit("lotado");
-    }*/
+    // send the players object to the new player
+    socket.emit(
+        "currentPlayers",
+        Object.entries(players).reduce(function (acc, curr) {
+            return { ...acc, [curr[0]]: { ...curr[1], socket: undefined } };
+        }, {})
+    );
+
+    // update all other players of the new player
+    socket.broadcast.emit("newPlayer", {
+        ...players[socket.id],
+        socket: undefined,
+    });
+
+    if (lista.length > 2) {
+        socket.emit("lotado");
+    }
 
     socket.on("disconnect", function () {
         console.log("a user disconnected", socket.id);
-        i--;
 
-        lista.length--;
-        //console.log(lista);
+        lista = lista.filter((player) => player.playerId !== socket.id);
+
         delete players[socket.id];
 
-        io.emit("disconnect", socket.id);
+        for (const p of lista) {
+            if (p.playing) {
+                p.socket.emit("gameOver", socket.id);
+            }
+        }
+
+        //console.log(lista, players);
+
+        //io.emit("disconnect", socket.id);
+    });
+
+    socket.on("exit", function () {
+        socket.disconnect();
     });
 
     socket.on("playerMovement", function (movementData) {
-        players[socket.id].x = movementData.x;
-        players[socket.id].y = movementData.y;
+        if (players[socket.id]) {
+            players[socket.id].x = movementData.x;
+            players[socket.id].y = movementData.y;
 
-        socket.broadcast.emit("playerMoved", players[socket.id]);
+            socket.broadcast.emit("playerMoved", {
+                ...players[socket.id],
+                socket: undefined,
+            });
+        }
     });
 
     socket.on("tempoFinal", function (timer) {

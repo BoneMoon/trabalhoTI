@@ -10,6 +10,7 @@ var WorldScene = new Phaser.Class({
     create: function () {
         var self = this;
         this.jogo = 0;
+        this.otherPlayers = this.physics.add.group();
 
         this.socket = io();
 
@@ -28,8 +29,11 @@ var WorldScene = new Phaser.Class({
             self.wait();
         });
 
+        this.socket.on("lotado", function () {
+            self.lotado();
+        });
+
         this.socket.on("currentPlayers", function (players) {
-            console.log("Currr");
             Object.keys(players).forEach(function (id) {
                 if (players[id].playerId === self.socket.id) {
                     self.addPlayer(self, players[id]);
@@ -40,25 +44,27 @@ var WorldScene = new Phaser.Class({
         });
 
         this.socket.on("newPlayer", function (playerInfo) {
-            console.log("newPlayer");
             self.addOtherPlayers(self, playerInfo);
         });
 
-        this.socket.on("disconnect", function (playerId) {
+        this.socket.on("gameOver", function (playerId) {
             self.otherPlayers.getChildren().forEach(function (otherPlayer) {
                 if (playerId === otherPlayer.playerId) {
                     otherPlayer.destroy();
+                    self.scene.start("youWin");
+                    self.socket.emit("exit");
                 }
             });
         });
 
         this.socket.on("youWin", function () {
+            self.socket.emit("exit");
             self.scene.start("youWin");
-            this.socket.disconnect();
         });
+
         this.socket.on("youLose", function () {
+            self.socket.emit("exit");
             self.scene.start("youLose");
-            this.socket.disconnect();
         });
 
         this.espera = this.add.text(50, 50, "", {
@@ -66,10 +72,10 @@ var WorldScene = new Phaser.Class({
             fill: "#000000",
         });
 
-        /*this.lotado = this.add.text(50, 50, "", {
+        this.decorrer = this.add.text(50, 50, "", {
             fontSize: "32px",
             fill: "#000000",
-        });*/
+        });
 
         this.direita = false;
         this.esquerda = false;
@@ -276,8 +282,6 @@ var WorldScene = new Phaser.Class({
     },
 
     addOtherPlayers: function (self, playerInfo) {
-        this.otherPlayers = this.physics.add.group();
-
         const otherPlayer = self.physics.add.sprite(
             playerInfo.x,
             playerInfo.y,
@@ -313,12 +317,16 @@ var WorldScene = new Phaser.Class({
 
     start: function () {
         this.jogo = 1;
-        console.log(this.jogo);
 
         if (this.jogo == 1) {
             this.espera.setText("");
             this.update();
         }
+    },
+
+    lotado: function () {
+        this.decorrer.setText("Jogo a decorrer");
+        this.jogo = 0;
     },
 
     update: function () {

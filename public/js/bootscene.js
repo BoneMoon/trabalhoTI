@@ -27,6 +27,6 @@ var BootScene = new Phaser.Class({
     },
 
     create: function () {
-        this.scene.start("youLose");
+        this.scene.start("Menu");
     },
 });
