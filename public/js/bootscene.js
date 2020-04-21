@@ -21,6 +21,8 @@ var BootScene = new Phaser.Class({
         this.load.image("btndir", "assets/img/rightButton.png");
         this.load.image("btnesq", "assets/img/leftButton.png");
         this.load.image("btnup", "assets/img/upButton.png");
+
+        this.load.image("taca", "assets/img/taca.jpg");
     },
 
     create: function () {
