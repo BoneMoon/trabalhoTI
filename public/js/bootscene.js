@@ -23,9 +23,10 @@ var BootScene = new Phaser.Class({
         this.load.image("btnup", "assets/img/upButton.png");
 
         this.load.image("taca", "assets/img/taca.jpg");
+        this.load.image("lose", "assets/img/lose.jpg");
     },
 
     create: function () {
-        this.scene.start("Menu");
+        this.scene.start("youLose");
     },
 });

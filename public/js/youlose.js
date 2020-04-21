@@ -8,12 +8,12 @@ var youLose = new Phaser.Class({
     preload() {},
 
     create() {
-        this.add.text(240, 50, "PERDESTE, MAIS SORTE PARA A PRÓXIMA", {
+        this.add.text(150, 150, "PERDESTE, MAIS SORTE PARA A PRÓXIMA", {
             fontSize: "32px",
             fill: "#000000",
         });
 
-        //this.taca = this.add.image(450, 400, "taca");
+        this.lose = this.add.image(450, 400, "lose");
 
         this.tenta2 = this.add.image(650, 590, "btndir").setInteractive();
         this.tenta2.setScale(0.2);
