@@ -14,6 +14,11 @@ var WorldScene = new Phaser.Class({
 
         this.socket = io();
 
+        this.bgm = this.sound.add('musicaFundo', {volume: 0.1, loop: true});
+        this.morte = this.sound.add('somMorte');
+
+        this.bgm.play();
+
         this.tempoText = this.add.text(16, 16, "", {
             fontSize: "32px",
             fill: "#000000",
@@ -51,6 +56,7 @@ var WorldScene = new Phaser.Class({
             self.otherPlayers.getChildren().forEach(function (otherPlayer) {
                 if (playerId === otherPlayer.playerId) {
                     otherPlayer.destroy();
+                    self.bgm.stop();
                     self.scene.start("youWin");
                     self.socket.emit("exit");
                 }
@@ -269,15 +275,18 @@ var WorldScene = new Phaser.Class({
 
         self.physics.add.collider(self.player, self.danoLava, () => {
             self.player.setPosition(30, 400);
+            self.morte.play();
         });
 
         self.physics.add.collider(self.player, self.danoEsp, () => {
             self.player.setPosition(30, 400);
+            self.morte.play();
         });
 
         self.physics.add.collider(self.player, self.obj, () => {
             self.player.disableBody(true, true);
             this.socket.emit("tempoFinal", self.timer);
+            self.bgm.stop();
         });
     },
 
@@ -296,14 +305,17 @@ var WorldScene = new Phaser.Class({
 
         self.physics.add.collider(otherPlayer, self.danoLava, () => {
             otherPlayer.setPosition(30, 400);
+            self.morte.play();
         });
 
         self.physics.add.collider(otherPlayer, self.danoEsp, () => {
             otherPlayer.setPosition(30, 400);
+            self.morte.play();
         });
 
         self.physics.add.collider(otherPlayer, self.obj, () => {
             otherPlayer.disableBody(true, true);
+            self.bgm.stop();
         });
 
         otherPlayer.playerId = playerInfo.playerId;

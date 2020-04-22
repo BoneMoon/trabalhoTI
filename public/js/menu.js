@@ -10,7 +10,7 @@ var Menu = new Phaser.Class({
     create() {
         //var self = this;
 
-        this.menu = this.add.text(240, 240, "Nome do Jogo", {
+        this.menu = this.add.text(240, 240, "Speedy Jumpy Boy", {
             fontSize: "40px",
             fill: "#000000",
         });

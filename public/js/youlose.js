@@ -8,6 +8,10 @@ var youLose = new Phaser.Class({
     preload() {},
 
     create() {
+        this.perde = this.sound.add('somPerde', {volume: 0.1, loop: true});
+
+        this.perde.play();
+
         this.add.text(150, 150, "PERDESTE, MAIS SORTE PARA A PRÓXIMA", {
             fontSize: "32px",
             fill: "#000000",
@@ -22,6 +26,7 @@ var youLose = new Phaser.Class({
         this.tenta2.on(
             "pointerup",
             function () {
+                this.perde.stop();
                 this.scene.start("Menu");
             },
             this

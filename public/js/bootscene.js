@@ -6,6 +6,11 @@ var BootScene = new Phaser.Class({
     },
 
     preload: function () {
+        this.load.audio('somGanha', 'assets/som/somGanha.mp3');
+        this.load.audio('somPerde', 'assets/som/somPerde.mp3');
+        this.load.audio('somMorte', 'assets/som/somMorte.mp3');
+        this.load.audio('musicaFundo', 'assets/som/musicaFundo.mp3');
+
         this.load.image("chao", "assets/mapa/chao.png");
         this.load.image("porta", "assets/mapa/lava_porta.png");
         this.load.image("lava", "assets/mapa/lava_porta.png");

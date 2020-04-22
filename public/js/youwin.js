@@ -8,6 +8,10 @@ var youWin = new Phaser.Class({
     preload() {},
 
     create() {
+        this.ganha = this.sound.add('somGanha', {volume: 0.1, loop: true});
+
+        this.ganha.play();
+        
         this.add.text(240, 50, "PARABÉNS, GANHASTE!!!", {
             fontSize: "32px",
             fill: "#000000",
@@ -22,6 +26,7 @@ var youWin = new Phaser.Class({
         this.tenta2.on(
             "pointerup",
             function () {
+                this.ganha.stop();
                 this.scene.start("Menu");
             },
             this
