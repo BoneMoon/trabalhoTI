@@ -14,8 +14,8 @@ var WorldScene = new Phaser.Class({
 
         this.socket = io();
 
-        this.bgm = this.sound.add('musicaFundo', {volume: 0.1, loop: true});
-        this.morte = this.sound.add('somMorte');
+        this.bgm = this.sound.add("musicaFundo", { volume: 0.1, loop: true });
+        this.morte = this.sound.add("somMorte");
 
         this.bgm.play();
 
@@ -25,6 +25,9 @@ var WorldScene = new Phaser.Class({
         });
         this.timeOut = performance.now();
         this.timer = 0;
+        setInterval(() => {
+            this.timer++;
+        }, 1000);
 
         this.socket.on("ready", function () {
             self.start();
@@ -343,7 +346,7 @@ var WorldScene = new Phaser.Class({
 
     update: function () {
         if (this.jogo == 1) {
-            this.timer++;
+            //this.timer++;
             this.tempoText.setText("Tempo: " + this.timer);
             if (this.player) {
                 if (
