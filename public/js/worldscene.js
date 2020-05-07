@@ -273,7 +273,7 @@ var WorldScene = new Phaser.Class({
         self.player.setCollideWorldBounds(true);
         self.player.setScale(1.5);
         self.player.setVelocity(0);
-
+        
         self.physics.add.collider(self.player, self.mapa);
 
         self.physics.add.collider(self.player, self.danoLava, () => {
@@ -291,6 +291,13 @@ var WorldScene = new Phaser.Class({
             this.socket.emit("tempoFinal", self.timer);
             self.bgm.stop();
         });
+    /*
+        self.p1 = this.add.text(self.player.body.x -20, self.player.body.y - 20, "", {
+            fontSize: "12px",
+            fill: "#000000"
+        });
+
+        self.p1.setText("Player 1");*/
     },
 
     addOtherPlayers: function (self, playerInfo) {
@@ -303,6 +310,8 @@ var WorldScene = new Phaser.Class({
         otherPlayer.setCollideWorldBounds(true);
         otherPlayer.setScale(1.5);
         otherPlayer.setVelocity(0);
+        
+        otherPlayer.setTint(0xffffff, 0xffffff, 0xffffff, 0xffffff);
 
         self.physics.add.collider(otherPlayer, self.mapa);
 
